@@ -61,6 +61,7 @@ const UploadFile = async (req,res)=>{
     let yz;
     let imagesBuffer =[];
     let imgUrl = [];
+    let priceBuffer = [];
   for(let i=0; i< fileInArray.length;i++){
     let fileext = fileInArray[i][0].split('.')[1];
     // console.log(fileext);
@@ -79,6 +80,9 @@ const UploadFile = async (req,res)=>{
     imgUrl.push({
       secure_url:img.secure_url,
     })
+    // priceBuffer.push(
+    //   {price:req.body.price}
+    // )
     // console.log(imagesBuffer);
     // console.log(imgUrl)
       
@@ -128,7 +132,103 @@ const UploadFile = async (req,res)=>{
     // res.send({message1:"upload failed"})
 }
 }
+const GetUpload =async (req,res) =>{
+  try {
+    let user = await PDF.find({});
+    console.log("na me be this")
+    res.json(user);
+    console.log(user);
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+// get single product
+const getSingleProduct = async (req,res) => {
+  try {
+    const product = await PDF.findById(req.params.id)
+    res.status(200).json(product);
+  }catch(error){
+    res.status(500).json(error);
+  }
+}
+// delete product
+const deleteProduct = async (req, res) => {
+  try {
+    await Product.findByIdAndDelete(req.params.id)
+    res.status(200).json("Product has been deleted...");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
+// const updateProduct = (req,res) => {
+//   console.log(req.body);
+//   if(!req.body) {
+//      return res.status(400).send({
+//       message:"Data to update can not be empty!"
+//      });
+//   }
+//   const id = req.params.id;
+//   PDF.findByIdAndUpdate(id,req.body, {
+//     useFindAndModify:false
+//   }).then (data => {
+//     if(!data) {
+//       res.status(404).send({
+//         message:`cannot update document with id=${id}. maybe document was not found`
+//       });
+//     }else res.send({message:"document was nupdated successfully"});
+//   })
+//   .catch (err => {
+//     res.status(500).send ({
+//       message:"error updating document with id=" + id
+//     });
+//   });
+// }
+
+// update product
+const updateProduct = async (req,res) =>{
+    try {
+    const id = req.params.id;
+    const updatedProduct = await PDF.findByIdAndUpdate(id, req.body,{
+      new:true,
+      $set: req.body
+    }) 
+    res.status(200).json(updatedProduct);
+    console.log(updatedProduct);
+     } catch (error) {
+    res.status(500).json(error)
+  }
+}
+
+// const updateProduct = async (req,res) => {
+//   console.log(req.body);
+//   try {
+//      let id = req.params.id;
+//      let updatedProduct = new PDF(req.body);
+//      PDF.findByIdAndUpdate(id, 
+//         {
+//      name:updatedProduct.name,
+//     // location :updatedProduct.location,
+//     price:updatedProduct.price,
+//     // market_price:updatedProduct.market_price,
+//     // days:updatedProduct.days,
+//     // year:updatedProduct.year,
+//     // volume:updatedProduct.volume,
+//     // available_supply:updatedProduct.available_supply,
+//     // Circulating_supply:updatedProduct.Circulating_supply,
+//     // Average_supply:updatedProduct.Average_supply, 
+//         }
+//       )
+//       console.log(updatedProduct);
+//       res.status(200).json(updatedProduct);
+
+//   }catch (error) {
+//     res.send(500).json(error);
+//   }
+// }
 
 
 
-module.exports = {UploadFile,upload};
+
+module.exports = {UploadFile,upload,updateProduct,getSingleProduct,GetUpload,deleteProduct};

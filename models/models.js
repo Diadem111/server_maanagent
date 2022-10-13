@@ -8,8 +8,8 @@ const imgSchema = new mongoose.Schema({
         type:String,},
 
     price:{
-        type:String,},
-
+        type:String,
+    },
     market_price:{
         type:String,},
 
